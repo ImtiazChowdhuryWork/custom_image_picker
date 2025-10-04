@@ -18,7 +18,7 @@ class CustomImagePickerApp extends StatelessWidget {
           debugShowCheckedModeBanner: false,
           title: 'Custom Image Picker Demo',
           theme: ThemeData(primarySwatch: Colors.blue),
-          home: const MainScreen(),
+          home: MainScreen(),
         );
       },
     );
