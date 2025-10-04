@@ -10,10 +10,11 @@ class CustomImagePickerController extends GetxController {
     try {
       final XFile? image = await _picker.pickImage(
         source: source,
-        maxHeight: 1024.h,
         maxWidth: 1024.w,
+        maxHeight: 1024.h,
         imageQuality: 85,
       );
+
       if (image != null) {
         pickedImagePath.value = image.path;
       } else {

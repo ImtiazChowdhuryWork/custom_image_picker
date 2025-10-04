@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../core/controllers/custom_image_picker_controller.dart';
 import '../../core/utils/image_picker_handler.dart';
@@ -13,35 +16,54 @@ class MainScreen extends StatelessWidget {
     tag: 'mainScreen',
   );
 
-  final ImagePickerHandler pickerHandler = ImagePickerHandler(
-    Get.find<CustomImagePickerController>(tag: 'mainScreen'),
+  late final ImagePickerHandler pickerHandler = ImagePickerHandler(
+    imageController,
   );
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Stateless Image Picker")),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            CustomImagePickerWidget(
+      backgroundColor: Colors.teal,
+      appBar: AppBar(
+        backgroundColor: Colors.teal,
+        title: const Text("Reusable Image Picker"),
+        centerTitle: true,
+      ),
+      body: Column(
+        children: [
+          Center(
+            child: CustomImagePickerWidget(
               controller: imageController,
               handler: pickerHandler,
-              defaultImagePath: "assets/images/profile_avatar.png",
-              editIconPath: "assets/icons/camera_icon.svg",
-              shapeHeight: 150,
-              shapeWidth: 150,
+              defaultImagePath: 'assets/images/profile_avatar.png',
+              editIconPath: 'assets/icons/camera_icon.svg',
+              shapeHeight: 120.h,
+              shapeWidth: 120.w,
             ),
-            const SizedBox(height: 20),
-            Obx(() {
+          ),
+          SizedBox(height: 40.h),
+
+          /// 🖼️ Show Selected Image Below
+          Obx(() {
+            final imagePath = imageController.pickedImagePath.value;
+            if (imagePath.isEmpty || !File(imagePath).existsSync()) {
               return Text(
-                'Picked Image: ${imageController.pickedImagePath.value.isEmpty ? "None" : imageController.pickedImagePath.value}',
-                textAlign: TextAlign.center,
+                "No image selected yet.",
+                style: TextStyle(color: Colors.white, fontSize: 16.sp),
               );
-            }),
-          ],
-        ),
+            }
+
+            return ClipRRect(
+              borderRadius: BorderRadius.circular(8.r),
+              child: Image.file(
+                File(imagePath),
+                width: 200.w,
+                height: 200.h,
+                fit: BoxFit.cover,
+              ),
+            );
+          }),
+        ],
       ),
     );
   }
