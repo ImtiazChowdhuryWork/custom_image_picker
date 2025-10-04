@@ -1,11 +1,12 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:get/get.dart';
+import 'package:flutter_svg/svg.dart';
 import '../controllers/custom_image_picker_controller.dart';
+import 'package:get/get.dart';
+
+import '../utils/image_picker_dialog.dart';
 import '../utils/image_picker_handler.dart';
-import '../utils/image_preview.dart';
 
 class CustomImagePickerWidget extends StatelessWidget {
   final CustomImagePickerController controller;
@@ -14,8 +15,6 @@ class CustomImagePickerWidget extends StatelessWidget {
   final String editIconPath;
   final double shapeHeight;
   final double shapeWidth;
-  final BoxShape shape;
-  final bool enablePreview;
 
   const CustomImagePickerWidget({
     super.key,
@@ -23,34 +22,58 @@ class CustomImagePickerWidget extends StatelessWidget {
     required this.handler,
     required this.defaultImagePath,
     required this.editIconPath,
-    this.shapeHeight = 120,
-    this.shapeWidth = 120,
-    this.shape = BoxShape.circle,
-    this.enablePreview = true,
+    required this.shapeHeight,
+    required this.shapeWidth,
   });
+
+  void _handlePickImage(BuildContext context) {
+    showImagePickerDialog(
+      onCameraTap: () {
+        Get.back();
+        handler.pickFromCamera();
+      },
+      onGalleryTap: () {
+        Get.back();
+        handler.pickFromGallery();
+      },
+    );
+  }
+
+  void _showPreview(BuildContext context, String imagePath) {
+    showGeneralDialog(
+      context: context,
+      barrierDismissible: true,
+      barrierLabel: '',
+      barrierColor: Colors.black54,
+      pageBuilder: (_, __, ___) => Center(
+        child: Container(
+          width: 0.9.sw,
+          height: 0.5.sh,
+          padding: EdgeInsets.all(10.sp),
+          color: Colors.white,
+          child: InteractiveViewer(
+            child: Image.file(File(imagePath), fit: BoxFit.contain),
+          ),
+        ),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return Obx(() {
       final imagePath = controller.pickedImagePath.value;
-      final hasImage = imagePath.isNotEmpty && File(imagePath).existsSync();
-
-      return GestureDetector(
-        onTap: () {
-          if (enablePreview && hasImage) {
-            ImagePreview.show(context, imagePath);
-          } else {
-            handler.showPickerDialog(context);
-          }
-        },
+      return InkWell(
+        onTap: () =>
+            imagePath.isNotEmpty ? _showPreview(context, imagePath) : null,
         child: Container(
           height: shapeHeight,
           width: shapeWidth,
           decoration: BoxDecoration(
-            shape: shape,
+            shape: BoxShape.circle,
             image: DecorationImage(
               fit: BoxFit.cover,
-              image: hasImage
+              image: imagePath.isNotEmpty
                   ? FileImage(File(imagePath))
                   : AssetImage(defaultImagePath) as ImageProvider,
             ),
@@ -61,7 +84,7 @@ class CustomImagePickerWidget extends StatelessWidget {
                 bottom: 5.h,
                 right: 5.w,
                 child: InkWell(
-                  onTap: () => handler.showPickerDialog(context),
+                  onTap: () => _handlePickImage(context),
                   child: SvgPicture.asset(editIconPath),
                 ),
               ),
