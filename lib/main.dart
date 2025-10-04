@@ -13,11 +13,11 @@ class CustomImagePickerApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ScreenUtilInit(
+      designSize: const Size(390, 844),
       builder: (context, child) {
         return GetMaterialApp(
           debugShowCheckedModeBanner: false,
           title: 'Custom Image Picker Demo',
-          theme: ThemeData(primarySwatch: Colors.blue),
           home: MainScreen(),
         );
       },

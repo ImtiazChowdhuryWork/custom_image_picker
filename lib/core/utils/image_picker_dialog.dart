@@ -1,8 +1,7 @@
-import 'package:custom_image_picker/core/utils/text_font_style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/get.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get.dart';
 
 void showImagePickerDialog({
   required VoidCallback onCameraTap,
@@ -25,26 +24,36 @@ void showImagePickerDialog({
               ListTile(
                 onTap: onCameraTap,
                 leading: SvgPicture.asset(
-                  "assets/icons/camera_icon_without_bg.svg",
+                  'assets/icons/camera_icon.svg',
+                  width: 24,
+                  height: 24,
                   colorFilter: const ColorFilter.mode(
-                    Colors.white, // previously AppColors.cFFFFFF
-                    BlendMode.srcIn,
+                    Colors.white,
+                    BlendMode.dst,
                   ),
                 ),
-                title: Text(
+                title: const Text(
                   "Camera",
-                  style: TextFontStyle.headline16w500cFFFFFFStylePoppins,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w500,
+                    fontSize: 16,
+                  ),
                 ),
               ),
               ListTile(
                 onTap: onGalleryTap,
                 leading: const Icon(
                   Icons.collections_rounded,
-                  color: Colors.white, // previously AppColors.cFFFFFF
+                  color: Colors.white,
                 ),
-                title: Text(
+                title: const Text(
                   "Gallery",
-                  style: TextFontStyle.headline16w500cFFFFFFStylePoppins,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w500,
+                    fontSize: 16,
+                  ),
                 ),
               ),
             ],
